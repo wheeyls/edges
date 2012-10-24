@@ -1,10 +1,7 @@
 (function (_) {
   "use strict";
 
-  var data = {
-      products: {}
-    , edges: {}
-    }
+  var data
     , matrix
     ;
 
@@ -15,6 +12,20 @@
     };
   }
   matrix = newMatrix();
+
+  function loadData() {
+    var loaded = localStorage && localStorage.getItem('product-data');
+    loaded && (loaded = JSON.parse(loaded));
+    data = loaded || {
+      products: {}
+    , edges: {}
+    };
+  }
+  loadData();
+
+  function saveData() {
+    localStorage && localStorage.setItem('product-data', JSON.stringify(data));
+  }
 
   function theTemplate() {
     var temp = _.template($("#li-temp").html());
@@ -136,6 +147,7 @@
   function saveAndClear() {
     storeCombos(matrix.products, matrix.features);
 
+    saveData();
     clear();
     return false;
   }
@@ -175,6 +187,7 @@
     $(document).on('click', '#products-list li', addToMatrix);
     $(document).on('click', '#matrix-features li', dropFeature);
     $(document).on('click', '#matrix-products li', dropProduct);
+    renderProductList();
   });
   window.data = data;
 }(this._));
