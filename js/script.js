@@ -55,7 +55,7 @@
 
   function createProduct(text) {
     var dataExisting = data.products[text] !== undefined
-      , matrixExisting = matrix.products.indexOf(text) > 0
+      , matrixExisting = matrix.products.indexOf(text) >= 0
       ;
 
     if (!dataExisting) {
