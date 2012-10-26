@@ -128,7 +128,7 @@
   function createItem() {
     var $$ = $(this)
       , $field = $$.find('.text')
-      , text = $field.val('')
+      , text = $field.val()
       , type = $$.data('item')
       ;
 
