@@ -3,6 +3,11 @@
 
   var data
     , matrix
+    , lastQuery
+    , sr = searchResults({
+      max: 12
+    , url: 'http://www.g2alpha.com/products/search.json'
+    })
     ;
 
   function newMatrix() {
@@ -49,10 +54,15 @@
   }
 
   function createProduct(text) {
-    var existing = data.products[text];
+    var dataExisting = data.products[text] !== undefined
+      , matrixExisting = matrix.products.indexOf(text) > 0
+      ;
 
-    if (existing === undefined) {
+    if (!dataExisting) {
       data.products[text] = text;
+    }
+
+    if (!matrixExisting) {
       matrix.products.push(text);
     }
 
@@ -118,7 +128,7 @@
   function createItem() {
     var $$ = $(this)
       , $field = $$.find('.text')
-      , text = $field.val()
+      , text = $field.val('')
       , type = $$.data('item')
       ;
 
@@ -180,13 +190,35 @@
     return features;
   }
 
+  function search() {
+    var val = $(this).val();
+
+    lastQuery !== val && sr.runQuery(val);
+    lastQuery = val;
+  }
+
+  function renderSearch(process, data) {
+    var d = JSON.parse(data);
+    process(_(d).map(function (val) { return val.name; }));
+  }
+
   $(function () {
     $('.creator').on('submit', createItem);
     $('#save').on('click', saveAndClear);
     $('#clear').on('click', clear);
+    $('#products-search').on('keyup', _.debounce(search, 300));
     $(document).on('click', '#products-list li', addToMatrix);
     $(document).on('click', '#matrix-features li', dropFeature);
     $(document).on('click', '#matrix-products li', dropProduct);
+
+    $('#products-search').typeahead({
+      source: function (query, process) {
+        $(sr).on('update', function (evt, data) {
+          renderSearch(process, data);
+        });
+      }
+    });
+
     renderProductList();
   });
   window.data = data;

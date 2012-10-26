@@ -2,8 +2,11 @@
 <html>
 <head>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/bootstrap.css">
   <script src="js/jquery.js"></script>
   <script src="js/underscore.js"></script>
+  <script src="js/search_results.js"></script>
+  <script src="js/typeahead.js"></script>
   <script src="js/script.js"></script>
 </head>
 <body>
@@ -18,13 +21,13 @@
         <tr>
           <td>
             <form id="create-product" data-item="product" class='creator' action='#'>
-              <input class='text'>
+              <input class='text' id='products-search' autocomplete="off">
               <input type="submit" value='Create Product'>
             </form>
           </td>
           <td>
             <form id="create-feature" data-item="feature" class='creator' action='#'>
-              <input class='text'>
+              <input class='text' id="features-search">
               <input type="submit" value='Create Feature'>
             </form>
           </td>
@@ -48,6 +51,14 @@
     <ul>
       <% for (var i in items) { %>
         <li><%= items[i] %></li>
+      <% } %>
+    </ul>
+  </script>
+
+  <script type='text/template' id='search-temp'>
+    <ul>
+      <% for (var i in items) { %>
+        <li><%= items[i].name %></li>
       <% } %>
     </ul>
   </script>
